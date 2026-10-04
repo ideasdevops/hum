@@ -1,0 +1,631 @@
+{
+ "version": 1,
+ "nota": "Definiciones operativas propuestas por IdeasDevOps a partir de la investigación (docs/INVESTIGACION_12_INTELIGENCIAS.md). El modelo de 12 inteligencias es de JFlow (Joaquín de Rosas): estas definiciones esperan su validación. Evidencia: A sólida, B moderada, C débil o conceptual (de las prácticas, no de la inteligencia como constructo).",
+ "dimensiones": [
+  {
+   "id": "cuerpo",
+   "nombre": "Cuerpo",
+   "color": "#0aa5c0",
+   "descripcion": "la energía, los sentidos, el movimiento y la capacidad de adaptarse: la base que sostiene todo lo demás"
+  },
+  {
+   "id": "mente",
+   "nombre": "Mente",
+   "color": "#8b5cf6",
+   "descripcion": "cómo pensás, te expresás en palabras, manejás el dinero y te vinculás con el ritmo y el sonido"
+  },
+  {
+   "id": "espiritu",
+   "nombre": "Espíritu",
+   "color": "#ec4899",
+   "descripcion": "los vínculos, el conocimiento de uno mismo, la expresión auténtica y el sentido de la vida"
+  }
+ ],
+ "inteligencias": [
+  {
+   "id": "vital",
+   "nombre": "Vital",
+   "dimension_id": "cuerpo",
+   "icono": "🔋",
+   "definicion": "Gestionar la energía física básica (sueño, alimentación, hidratación, recuperación y estrés) para sostener salud y rendimiento en el tiempo.",
+   "base": "Carga alostática (McEwen); ≥7 h de sueño en adultos (AASM/SRS); higiene circadiana y control de estímulos de la terapia cognitivo-conductual del insomnio; actividad física (OMS 2020).",
+   "evidencia": "A",
+   "senales": [
+    "duerme menos de 7 h o con horarios irregulares",
+    "cansancio persistente o «funciono a café»",
+    "saltea comidas o toma poca agua",
+    "estrés sostenido: tensión, dolores, se enferma seguido",
+    "no hace pausas ni se toma descansos"
+   ],
+   "preguntas": [
+    "Del 1 al 10, ¿con cuánta energía te despertaste hoy? ¿Qué la explica?",
+    "¿A qué hora te acostás de verdad, y cuántas horas dormiste esta semana?",
+    "¿Qué te recarga de verdad, y cuándo fue la última vez que lo hiciste?",
+    "¿En qué momento del día tu cuerpo te pide algo que no le das?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Despertar a hora fija",
+     "como": "misma hora todos los días, también el fin de semana, y luz natural apenas te levantás",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "Aterrizaje nocturno",
+     "como": "30 a 60 minutos sin pantallas ni trabajo antes de dormir; la cama solo para dormir",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "Ancla de agua",
+     "como": "un vaso de agua al despertar, antes del café",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Pausa activa",
+     "como": "2 a 5 minutos de movimiento cada 60 a 90 minutos sentado",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Respiración lenta",
+     "como": "5 minutos a unas 6 respiraciones por minuto para bajar la activación",
+     "evidencia": "B"
+    }
+   ],
+   "cuidado": "Insomnio de más de 3 noches por semana durante meses, ronquidos con pausas o fatiga extrema son tema médico: sugerí consultar.",
+   "dimension": "Cuerpo"
+  },
+  {
+   "id": "sensorial",
+   "nombre": "Sensorial",
+   "dimension_id": "cuerpo",
+   "icono": "🌿",
+   "definicion": "Percibir con atención las señales del entorno (los cinco sentidos) y del propio cuerpo (interocepción: latido, respiración, hambre, tensión), y usarlas para regularse y disfrutar.",
+   "base": "Interocepción (Garfinkel, Khalsa), mindfulness como entrenamiento atencional, saborear (savoring), exposición a la naturaleza, etiquetado afectivo.",
+   "evidencia": "B",
+   "senales": [
+    "se da cuenta tarde del hambre, el cansancio o el enojo («exploté sin darme cuenta»)",
+    "sobrecarga por ruido, luz o gente",
+    "relatos sin detalle sensorial, o muy ricos",
+    "casi todo el día frente a pantallas y poco aire libre",
+    "usa (o no) el disfrute sensorial para regularse"
+   ],
+   "preguntas": [
+    "Cuando te estresás, ¿dónde lo sentís primero en el cuerpo?",
+    "¿Qué sonidos, olores o lugares te calman? ¿Y cuáles te sacan?",
+    "Contame el mejor momento de tu semana con los sentidos: qué viste, oíste, sentiste.",
+    "¿Cuánto tiempo estuviste hoy al aire libre?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Escaneo corporal",
+     "como": "3 a 5 minutos recorriendo el cuerpo con la atención, una vez por día",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Anclaje 5-4-3-2-1",
+     "como": "5 cosas que ves, 4 que tocás, 3 que oís, 2 que olés, 1 que saboreás, ante la ansiedad",
+     "evidencia": "C"
+    },
+    {
+     "nombre": "Saborear",
+     "como": "detenerte 30 segundos en algo agradable y nombrarlo",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Verde semanal",
+     "como": "al menos 20 minutos por semana en la naturaleza o caminando entre árboles",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Nombrar la sensación",
+     "como": "«noto el pecho apretado» antes de reaccionar",
+     "evidencia": "B"
+    }
+   ],
+   "dimension": "Cuerpo"
+  },
+  {
+   "id": "motriz",
+   "nombre": "Motriz",
+   "dimension_id": "cuerpo",
+   "icono": "🏃",
+   "definicion": "Usar el cuerpo con coordinación, fuerza, equilibrio y destreza, y sostener el movimiento como hábito y como vía de aprendizaje y regulación.",
+   "base": "Pautas OMS 2020: 150 a 300 minutos semanales de actividad moderada y fuerza 2 días; el ejercicio reduce síntomas depresivos (metaanálisis BMJ 2024); equilibrio y caídas (Cochrane).",
+   "evidencia": "A",
+   "senales": [
+    "días activos por semana y horas sentado",
+    "aprende haciendo, prefiere probar a leer",
+    "rigidez, dolor de espalda o falta de fuerza",
+    "dejó un deporte o actividad que disfrutaba",
+    "usa el movimiento para regularse («salí a caminar y se me pasó»)"
+   ],
+   "preguntas": [
+    "¿Qué movimiento disfrutabas de chico que hoy ya no hacés?",
+    "¿Cuántos días de esta semana te moviste al menos 20 minutos?",
+    "Si el ejercicio fuera un juego y no una obligación, ¿cómo sería?",
+    "¿Qué tan fácil te resulta subir dos pisos por escalera?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Bocados de ejercicio",
+     "como": "1 a 2 minutos de escaleras o sentadillas varias veces por día",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Caminata digestiva",
+     "como": "10 a 15 minutos de caminata después de comer",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Fuerza dos veces",
+     "como": "2 sesiones semanales de fuerza con el propio peso",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "Equilibrio apilado",
+     "como": "30 segundos en un pie mientras te lavás los dientes",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "Regla del no-cero",
+     "como": "en un día malo, 5 minutos también cuentan",
+     "evidencia": "B"
+    }
+   ],
+   "dimension": "Cuerpo"
+  },
+  {
+   "id": "adaptativa",
+   "nombre": "Adaptativa",
+   "dimension_id": "cuerpo",
+   "icono": "🌊",
+   "definicion": "Ajustar pensamiento, emoción y conducta ante el cambio, la incertidumbre y la adversidad, y recuperarse aprendiendo de la experiencia.",
+   "base": "Flexibilidad psicológica (Kashdan y Rottenberg; ACT), resiliencia como proceso, reevaluación cognitiva frente a supresión (Gross y John).",
+   "evidencia": "A/B",
+   "senales": [
+    "lenguaje rígido: «siempre», «nunca», «tiene que ser así», catástrofe",
+    "cuánto tarda en recuperarse de un revés",
+    "genera alternativas cuando algo falla, o se traba",
+    "necesita control total o posterga por miedo",
+    "relata desde el aprendizaje o desde la víctima"
+   ],
+   "preguntas": [
+    "Pensá en un cambio grande que ya atravesaste: ¿qué hiciste que funcionó?",
+    "¿Qué parte de esto está bajo tu control y cuál no?",
+    "Si un amigo estuviera en tu lugar, ¿qué tres opciones le darías?",
+    "¿Qué sería un «suficientemente bien» en este caso?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Círculo de control",
+     "como": "separar lo que controlás, lo que influís y lo que no",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Otra lectura",
+     "como": "escribir una interpretación alternativa y plausible de lo que pasó",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "Pre-mortem",
+     "como": "«imaginá que en 3 meses esto salió mal: ¿por qué?» y preparar respuestas",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Incomodidad chica",
+     "como": "un cambio de rutina pequeño por semana para ampliar la tolerancia",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Diario de recuperación",
+     "como": "después de un revés: 1 aprendizaje y 1 próximo paso",
+     "evidencia": "B"
+    }
+   ],
+   "dimension": "Cuerpo"
+  },
+  {
+   "id": "logica",
+   "nombre": "Lógica",
+   "dimension_id": "mente",
+   "icono": "🧩",
+   "definicion": "Razonar con claridad: analizar problemas, distinguir hechos de supuestos, estimar probabilidades y decidir evitando sesgos.",
+   "base": "Racionalidad (Stanovich), entrenamiento contra sesgos (Morewedge), calibración de pronósticos (Good Judgment Project), «considerar lo opuesto».",
+   "evidencia": "B",
+   "senales": [
+    "ordena el problema (opciones, criterios, datos) o salta a conclusiones",
+    "distingue hechos de supuestos",
+    "sesgos: confirmación, costo hundido, todo-o-nada",
+    "parálisis por análisis en decisiones chicas",
+    "usa estimaciones o se queda en impresiones"
+   ],
+   "preguntas": [
+    "¿Qué tendría que ser cierto para que esta opción sea la mejor?",
+    "¿Qué te haría cambiar de opinión?",
+    "Si no hubieras invertido nada todavía, ¿elegirías lo mismo?",
+    "¿Es una decisión reversible o irreversible?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Matriz de decisión",
+     "como": "opciones contra 3 a 5 criterios con peso",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Diario de decisiones",
+     "como": "anotar decisión, razones y probabilidad; revisarlo a los 3 meses",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Considerar lo opuesto",
+     "como": "antes de cerrar, argumentar la otra opción",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "10/10/10",
+     "como": "¿cómo me sentiré en 10 minutos, 10 meses y 10 años?",
+     "evidencia": "C"
+    },
+    {
+     "nombre": "Dormirlo",
+     "como": "las decisiones grandes sin urgencia, después de una noche",
+     "evidencia": "B"
+    }
+   ],
+   "dimension": "Mente"
+  },
+  {
+   "id": "linguistica",
+   "nombre": "Lingüística",
+   "dimension_id": "mente",
+   "icono": "📖",
+   "definicion": "Comprender y usar el lenguaje con precisión (leer, escribir, escuchar, argumentar) y poner en palabras la experiencia interna y externa.",
+   "base": "Escritura expresiva (Pennebaker), etiquetado afectivo, granularidad emocional, práctica de recuperación y repaso espaciado (Dunlosky 2013).",
+   "evidencia": "A/B",
+   "senales": [
+    "vocabulario preciso, también emocional («mal» o «frustrado, decepcionado»)",
+    "claridad para explicar o pedir",
+    "hábito de lectura o escritura",
+    "le cuesta expresarse en reuniones o por escrito",
+    "escucha y retoma lo que dijo el otro"
+   ],
+   "preguntas": [
+    "Si se lo explicaras a alguien de 12 años en tres frases, ¿qué dirías?",
+    "¿Qué palabra describe exactamente lo que sentís? Probemos tres.",
+    "¿Qué estás leyendo? ¿Qué te quedó?",
+    "¿Qué conversación difícil estás postergando? ¿Cómo sería la primera frase?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Escritura expresiva",
+     "como": "15 a 20 minutos, 3 o 4 días, sobre algo importante que te movió (no en plena crisis)",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Tres palabras",
+     "como": "nombrar lo que sentís con 2 o 3 palabras precisas",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Resumen en 3 frases",
+     "como": "de lo que leíste o de una reunión, sin mirar",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "Repaso espaciado",
+     "como": "tarjetas para un idioma o un tema técnico",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "20 minutos de lectura",
+     "como": "texto largo, apilado al café o antes de dormir",
+     "evidencia": "B"
+    }
+   ],
+   "dimension": "Mente"
+  },
+  {
+   "id": "financiera",
+   "nombre": "Financiera",
+   "dimension_id": "mente",
+   "icono": "💰",
+   "definicion": "Conocimiento, hábitos y actitud para decidir bien con el dinero (presupuestar, ahorrar, endeudarse con criterio, protegerse) y lograr tranquilidad financiera.",
+   "base": "Alfabetización financiera OCDE/INFE, las «Big Three» de Lusardi y Mitchell, ahorro automático por defecto (Madrian y Shea; Thaler y Benartzi). Contexto argentino: inflación y bimonetarismo.",
+   "evidencia": "A",
+   "senales": [
+    "sabe o no cuánto gana y gasta por mes",
+    "fondo de emergencia y cuántos meses cubre",
+    "evita mirar el resumen de la tarjeta, ansiedad con el tema",
+    "deuda cara (pago mínimo, préstamos caros)",
+    "compras impulsivas o rigidez extrema por miedo"
+   ],
+   "preguntas": [
+    "Si mañana dejaras de cobrar, ¿cuántos meses podrías cubrir?",
+    "¿Qué emoción aparece cuando pensás en tu plata?",
+    "¿Cuál es tu gasto «invisible» más grande del mes?",
+    "¿Para qué querés el dinero? ¿Qué te daría que hoy no tenés?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Pagarte primero",
+     "como": "separar el ahorro el mismo día que cobrás, automático si se puede",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "30 días de registro",
+     "como": "anotar todos los gastos un mes, sin juzgar; después agrupar",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Primer escalón",
+     "como": "fondo de emergencia de 1 mes de gastos como primera meta",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Regla de las 48 horas",
+     "como": "esperar dos días antes de una compra no planificada grande",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Cita con tu plata",
+     "como": "30 minutos por mes: revisar, ajustar y decidir una acción",
+     "evidencia": "B"
+    }
+   ],
+   "cuidado": "No des recomendaciones de inversión personalizadas (es actividad regulada por la CNV): orientá en hábitos y conceptos, y sugerí un asesor para decisiones grandes.",
+   "dimension": "Mente"
+  },
+  {
+   "id": "musical",
+   "nombre": "Musical",
+   "dimension_id": "mente",
+   "icono": "🎵",
+   "definicion": "Percibir, producir y usar el ritmo, la melodía y el sonido, como habilidad y como herramienta para regular emociones, concentrarse y vincularse.",
+   "base": "Música y reducción del estrés (de Witte 2020), cantar en grupo y vínculo, arte y salud (OMS, Fancourt y Finn 2019). Ojo: la formación musical no mejora la inteligencia general (Sala y Gobet).",
+   "evidencia": "B",
+   "senales": [
+    "usa música para regular estados («pongo tal lista para concentrarme»)",
+    "toca o tocaba un instrumento, canta, baila",
+    "sensibilidad al ritmo y la cadencia",
+    "cómo es su ambiente sonoro de trabajo",
+    "canciones pegadas asociadas a ansiedad"
+   ],
+   "preguntas": [
+    "¿Qué canción describe cómo te sentís hoy?",
+    "¿Qué música te devuelve energía? ¿Y cuál te calma?",
+    "¿Hubo una etapa en que hacías música? ¿Qué pasó?",
+    "¿Trabajás mejor con silencio, ruido de fondo o música?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Listas por estado",
+     "como": "una lista para activar, otra para enfocar, otra para calmar, usadas a propósito",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Escucha atenta",
+     "como": "10 a 20 minutos solo escuchando, sin hacer otra cosa",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Cantar o tararear",
+     "como": "también alarga la exhalación y calma",
+     "evidencia": "C"
+    },
+    {
+     "nombre": "10 minutos de instrumento",
+     "como": "por disfrute, no para ser más inteligente",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Música compartida",
+     "como": "coro, ronda o baile en grupo (puente con la Conectiva)",
+     "evidencia": "B"
+    }
+   ],
+   "cuidado": "No prometas que la música te hace más inteligente: la evidencia dice que no.",
+   "dimension": "Mente"
+  },
+  {
+   "id": "conectiva",
+   "nombre": "Conectiva",
+   "dimension_id": "espiritu",
+   "icono": "🤝",
+   "definicion": "Comprender a otros, crear y cuidar vínculos de confianza, cooperar y pertenecer a comunidades.",
+   "base": "Conexión social y mortalidad (Holt-Lunstad 2010), necesidad de vínculo (autodeterminación, Deci y Ryan), Comisión de la OMS sobre Conexión Social, respuesta activa-constructiva (Gable).",
+   "evidencia": "A",
+   "senales": [
+    "red de apoyo: a quién llamaría un domingo a las 3 de la mañana",
+    "contactos significativos por semana (no solo mensajes)",
+    "soledad expresada («nadie me entiende»)",
+    "ve la perspectiva del otro en los conflictos",
+    "pertenece a grupos: club, comunidad, voluntariado, fe"
+   ],
+   "preguntas": [
+    "¿Con quién te sentís completamente vos?",
+    "¿Qué relación te gustaría cuidar más este mes?",
+    "En ese conflicto, ¿qué creés que necesitaba la otra persona?",
+    "¿Cuándo fue la última vez que alguien te ayudó? ¿Y vos a alguien?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Un contacto real por día",
+     "como": "una llamada o un encuentro, no un «me gusta»",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Celebrar en serio",
+     "como": "ante una buena noticia ajena, preguntar y festejar con detalle",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Escucha con reflejo",
+     "como": "repetir con tus palabras antes de responder",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Amabilidad planificada",
+     "como": "un acto amable elegido por semana",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Ritual de reparación",
+     "como": "después de un conflicto: nombrar, asumir tu parte, proponer",
+     "evidencia": "B"
+    }
+   ],
+   "dimension": "Espíritu"
+  },
+  {
+   "id": "introspectiva",
+   "nombre": "Introspectiva",
+   "dimension_id": "espiritu",
+   "icono": "🪞",
+   "definicion": "Observarse con honestidad y compasión (emociones, pensamientos, valores, patrones y necesidades) y usar ese conocimiento para dirigir la vida.",
+   "base": "Reflexión frente a rumiación (Trapnell y Campbell), mindfulness (Goldberg 2018), autocompasión (Neff; Ferrari 2019), clarificación de valores (ACT).",
+   "evidencia": "A/B",
+   "senales": [
+    "nombra lo que siente y por qué («me enoja porque valoro…»)",
+    "reconoce sus patrones («siempre me pasa cuando…»)",
+    "diálogo interno cruel o compasivo",
+    "rumiación: vueltas sin acción",
+    "coherencia entre sus valores y cómo usa el tiempo"
+   ],
+   "preguntas": [
+    "¿Qué te está queriendo decir esta emoción?",
+    "¿Qué patrón ves repetirse en tu vida estos años?",
+    "¿Cómo le hablarías a un amigo en tu situación? ¿Y cómo te hablás a vos?",
+    "¿Pensar en esto te acerca a una acción o te da vueltas?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Check-in de un minuto",
+     "como": "emoción, intensidad y qué necesito",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Meditación breve",
+     "como": "5 a 10 minutos guiados",
+     "evidencia": "A"
+    },
+    {
+     "nombre": "Pausa de autocompasión",
+     "como": "«esto es difícil; no soy el único; que pueda ser amable conmigo»",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Valores contra agenda",
+     "como": "una vez por semana: ¿mi calendario refleja lo que me importa?",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Ventana de preocupación",
+     "como": "15 minutos para preocuparte; después, acción o soltar",
+     "evidencia": "B"
+    }
+   ],
+   "cuidado": "Distinguí reflexión de rumiación: si la persona da vueltas sin salida, llevala a una acción concreta o al cuerpo, no a más análisis.",
+   "dimension": "Espíritu"
+  },
+  {
+   "id": "expresiva",
+   "nombre": "Expresiva",
+   "dimension_id": "espiritu",
+   "icono": "🎨",
+   "definicion": "Exteriorizar de forma auténtica, creativa y adecuada lo que uno piensa, siente y es (con palabras, arte, cuerpo o acción) y comunicar límites y necesidades.",
+   "base": "Costos de la supresión emocional (Gross y John), asertividad, autenticidad y bienestar, actividad creativa diaria y florecimiento (Conner 2018), arte y salud (OMS).",
+   "evidencia": "B",
+   "senales": [
+    "dice lo que necesita o se calla «para no molestar»",
+    "se guarda las cosas y estalla tarde",
+    "tiene o tuvo canales creativos: escribir, dibujar, bailar, cocinar",
+    "le cuesta decir que no y se sobrecarga",
+    "coherencia entre lo que muestra y lo que siente"
+   ],
+   "preguntas": [
+    "¿Qué necesitás decir y no estás diciendo?",
+    "¿Cuándo fue la última vez que creaste algo solo por gusto?",
+    "¿A qué le dijiste que sí esta semana cuando querías decir que no?",
+    "Si tu emoción de hoy fuera un color o un sonido, ¿cuál sería?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Mensaje en primera persona",
+     "como": "«yo siento, necesito, propongo»",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Ensayar el límite",
+     "como": "practicar con HUM la conversación antes de tenerla",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "15 minutos de creación",
+     "como": "escritura libre, dibujo o cocina, sin juicio, 3 veces por semana",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Un no por semana",
+     "como": "declinar un compromiso que no va con vos",
+     "evidencia": "C"
+    },
+    {
+     "nombre": "Compartir lo creado",
+     "como": "mostrárselo a alguien de confianza",
+     "evidencia": "C"
+    }
+   ],
+   "dimension": "Espíritu"
+  },
+  {
+   "id": "trascendental",
+   "nombre": "Trascendental",
+   "dimension_id": "espiritu",
+   "icono": "✨",
+   "definicion": "Encontrar y cultivar sentido, propósito y conexión con algo más grande que uno (religioso, espiritual, ético, comunitario o natural) y enfrentar las preguntas existenciales.",
+   "base": "Sentido y propósito de vida (Steger; propósito y longevidad, Hill y Turiano), asombro (Keltner; caminatas de asombro, Sturm 2022), gratitud, ikigai (cohorte Ohsaki).",
+   "evidencia": "A/B",
+   "senales": [
+    "habla de propósito, legado o «para qué»",
+    "vacío: «nada tiene sentido», «vivo en piloto automático»",
+    "prácticas espirituales, naturaleza, voluntariado",
+    "experiencias de asombro o gratitud",
+    "preguntas sobre la muerte, la pérdida o el duelo"
+   ],
+   "preguntas": [
+    "¿Qué te gustaría que dijeran de vos las personas que más querés?",
+    "¿Cuándo sentiste por última vez que eras parte de algo más grande?",
+    "¿Qué le da sentido a tus días difíciles?",
+    "Si tu vida fuera un libro, ¿cómo se llamaría este capítulo? ¿Y el próximo?"
+   ],
+   "practicas": [
+    {
+     "nombre": "Tres cosas buenas",
+     "como": "una vez por semana, escribir tres cosas buenas y por qué pasaron",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Caminata de asombro",
+     "como": "15 minutos por semana prestando atención a lo vasto o bello",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Propósito en una frase",
+     "como": "escribirlo y revisarlo cada tres meses",
+     "evidencia": "C"
+    },
+    {
+     "nombre": "Contribuir",
+     "como": "voluntariado o ayuda regular a otros",
+     "evidencia": "B"
+    },
+    {
+     "nombre": "Mejor yo posible",
+     "como": "escribir cómo sería tu vida si todo sale bien",
+     "evidencia": "B"
+    }
+   ],
+   "cuidado": "Respetá cualquier creencia o ninguna; no promuevas una espiritualidad en particular. Si el vacío persiste semanas con falta de placer, sugerí una consulta profesional.",
+   "dimension": "Espíritu"
+  }
+ ]
+}

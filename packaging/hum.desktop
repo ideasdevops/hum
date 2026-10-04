@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=HUM
+GenericName=Inteligencia humanizada
+Comment=Tu compañero para crecer en cuerpo, mente y espíritu
+Exec=hum
+Icon=hum
+Terminal=false
+Categories=Utility;Education;
+Keywords=IA;asistente;bienestar;metas;hábitos;JFlow;UEI;
+StartupWMClass=HUM

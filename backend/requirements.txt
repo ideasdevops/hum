@@ -1,0 +1,10 @@
+# HUM — dependencias del backend. Pines con techo: HUM se instala en equipos con
+# JFlowOS durante meses y una major nueva rompe.
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+pydantic>=2.7,<3.0
+anthropic>=1.11,<2
+# Voz local (oído y habla). Opcionales: sin ellas HUM funciona solo por texto.
+faster-whisper>=1.2,<2
+av>=13,<16          # faster-whisper 1.2 usa metadata_errors, que PyAV 16+ ya no acepta
+piper-tts>=1.3,<2

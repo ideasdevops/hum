@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# HUM — la inteligencia humanizada de JFlowOS.
+#
+#   hum                abre HUM (levanta el servidor si hace falta) en una ventana propia
+#   hum instalar       crea el entorno Python, instala dependencias y compila la interfaz
+#   hum levantar       levanta el servidor en segundo plano, sin ventana (arranque de sesión)
+#   hum servidor       corre el servidor en primer plano (para depurar)
+#   hum detener        apaga el servidor
+#   hum estado         dice si está corriendo y con qué piensa
+#
+# Variables: HUM_PUERTO (8412), HUM_DATA_DIR, HUM_CONFIG_DIR.
+set -euo pipefail
+
+RAIZ="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+BACK="$RAIZ/backend"
+FRONT="$RAIZ/frontend"
+PUERTO="${HUM_PUERTO:-8412}"
+URL="http://127.0.0.1:$PUERTO"
+ESTADO="${XDG_STATE_HOME:-$HOME/.local/state}/hum"
+PID="$ESTADO/hum.pid"
+LOG="$ESTADO/hum.log"
+mkdir -p "$ESTADO"
+
+aviso() { echo "HUM: $*" >&2; [ -t 2 ] || { command -v notify-send >/dev/null && notify-send -i hum "HUM" "$*"; } || true; }
+
+corriendo() { curl -fsS -m 2 "$URL/api/estado" >/dev/null 2>&1; }
+
+instalar() {
+  echo "→ Entorno de Python"
+  if [ ! -x "$BACK/venv/bin/python" ]; then
+    python3 -m venv "$BACK/venv" 2>/dev/null || virtualenv -q "$BACK/venv"
+  fi
+  "$BACK/venv/bin/pip" install -q --upgrade pip
+  "$BACK/venv/bin/pip" install -q -r "$BACK/requirements.txt"
+  echo "→ Interfaz"
+  (cd "$FRONT" && npm install --no-audit --no-fund --silent && npm run build --silent)
+  echo "✓ HUM instalado. Abrilo con: hum"
+}
+
+servidor() {
+  cd "$BACK"
+  exec "$BACK/venv/bin/uvicorn" main:app --host 127.0.0.1 --port "$PUERTO" --log-level warning
+}
+
+levantar() {
+  corriendo && return 0
+  [ -x "$BACK/venv/bin/uvicorn" ] || { aviso "HUM no está instalado. Corré: hum instalar"; exit 1; }
+  (cd "$BACK" || exit 1; nohup "$BACK/venv/bin/uvicorn" main:app --host 127.0.0.1 --port "$PUERTO" --log-level warning >>"$LOG" 2>&1 & echo $! >"$PID")
+  for _ in $(seq 1 60); do corriendo && return 0; sleep 0.5; done
+  aviso "No pude arrancar HUM. Mirá $LOG"; exit 1
+}
+
+abrir() {
+  levantar
+  # Ventana de app (sin barra de navegador) si hay Chromium; si no, el navegador por defecto.
+  # --use-fake-ui-for-media-stream no: el permiso del micrófono lo da la persona.
+  for b in chromium chromium-browser google-chrome brave-browser; do
+    if command -v "$b" >/dev/null; then
+      exec "$b" --app="$URL" --class=HUM --password-store=basic --user-data-dir="$ESTADO/navegador" --window-size=1280,860 >/dev/null 2>&1
+    fi
+  done
+  xdg-open "$URL" >/dev/null 2>&1 &
+}
+
+case "${1:-abrir}" in
+  abrir) abrir ;;
+  levantar) levantar; echo "HUM corriendo en $URL" ;;
+  instalar) instalar ;;
+  servidor) servidor ;;
+  detener) [ -f "$PID" ] && kill "$(cat "$PID")" 2>/dev/null && rm -f "$PID" && echo "HUM detenido." || echo "HUM no estaba corriendo." ;;
+  estado) corriendo && curl -fsS "$URL/api/estado" | python3 -c "import json,sys;d=json.load(sys.stdin);print('Corriendo en $URL · piensa con', d['proveedor'] or '(sin modelo)')" || echo "Detenido." ;;
+  *) sed -n '2,12p' "$0"; exit 1 ;;
+esac
