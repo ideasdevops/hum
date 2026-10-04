@@ -31,11 +31,27 @@ y la voz (Piper, voz es_AR) corren en el equipo.
 
 ## Instalar y usar
 
+**En JFlowOS 12.1 «Chacayes» o posterior** HUM ya viene instalado: Super+H o el orbe del dock.
+
+**En cualquier otro equipo** (Linux, macOS con Intel o chip Apple, Windows con WSL):
+
 ```bash
-bin/hum instalar     # venv + dependencias + compila la interfaz (Python 3.10+, Node 20, ffmpeg)
-bin/hum              # abre HUM en una ventana propia (levanta el servidor si hace falta)
-bin/hum levantar     # solo el servidor, en segundo plano (para el arranque de sesión)
-bin/hum estado | detener | servidor
+git clone git@github.com:ideasdevops/hum.git && bash hum/install.sh
+```
+
+Requisitos: git, curl y Python 3.10 o más nuevo. En la Mac, el Python que trae Xcode es 3.9: instalá el de
+<https://www.python.org/downloads/> o `brew install python`. No pide sudo y no hace falta Node: la interfaz
+viene compilada.
+
+El instalador deja el código en `~/.local/share/hum-app`, el comando `hum` en `~/.local/bin` y un acceso en el
+menú (Linux) o la app **HUM** en `~/Applications` (macOS). La voz necesita macOS 14 o superior en Mac; si las
+bibliotecas de voz no se pueden instalar, HUM queda funcionando por texto.
+
+```bash
+hum                  # abre HUM en una ventana propia (Chrome/Chromium en modo app, o el navegador)
+hum actualizar       # baja la última versión
+hum desinstalar      # quita HUM (pregunta si borrar también lo que HUM sabe de vos)
+hum levantar | estado | detener | servidor
 ```
 
 Escucha solo en `127.0.0.1:8412`. Para pensar necesita **uno** de estos tres:

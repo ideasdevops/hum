@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
-# HUM — la inteligencia humanizada de JFlowOS.
+# HUM — la inteligencia humanizada de UEI. Funciona en JFlowOS, en cualquier Linux, en macOS y en
+# Windows con WSL.
 #
 #   hum                abre HUM (levanta el servidor si hace falta) en una ventana propia
-#   hum instalar       crea el entorno Python, instala dependencias y compila la interfaz
+#   hum instalar       crea el entorno de Python e instala las dependencias (la interfaz ya viene compilada)
+#   hum actualizar     baja la última versión (git pull) y pone al día las dependencias
 #   hum levantar       levanta el servidor en segundo plano, sin ventana (arranque de sesión)
 #   hum servidor       corre el servidor en primer plano (para depurar)
 #   hum detener        apaga el servidor
 #   hum estado         dice si está corriendo y con qué piensa
+#   hum desinstalar    quita HUM del equipo (pregunta si borrar también lo que HUM sabe de vos)
 #
 # Variables: HUM_PUERTO (8412), HUM_DATA_DIR, HUM_CONFIG_DIR.
 set -euo pipefail
 
-RAIZ="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+# readlink -f no existe en macOS viejos: se resuelve el enlace con Python
+real() { readlink -f "$1" 2>/dev/null || python3 -c 'import os,sys;print(os.path.realpath(sys.argv[1]))' "$1"; }
+RAIZ="$(cd "$(dirname "$(real "$0")")/.." && pwd)"
 BACK="$RAIZ/backend"
 FRONT="$RAIZ/frontend"
 PUERTO="${HUM_PUERTO:-8412}"
@@ -21,20 +26,73 @@ PID="$ESTADO/hum.pid"
 LOG="$ESTADO/hum.log"
 mkdir -p "$ESTADO"
 
-aviso() { echo "HUM: $*" >&2; [ -t 2 ] || { command -v notify-send >/dev/null && notify-send -i hum "HUM" "$*"; } || true; }
+es_mac() { [ "$(uname -s)" = Darwin ]; }
+es_wsl() { grep -qi microsoft /proc/version 2>/dev/null; }
+
+aviso() {
+  echo "HUM: $*" >&2
+  [ -t 2 ] && return 0
+  if es_mac; then osascript -e "display notification \"$*\" with title \"HUM\"" 2>/dev/null || true
+  elif command -v notify-send >/dev/null; then notify-send -i hum "HUM" "$*" 2>/dev/null || true; fi
+}
 
 corriendo() { curl -fsS -m 2 "$URL/api/estado" >/dev/null 2>&1; }
 
+# Python 3.10 o más nuevo (el de Xcode en macOS es 3.9: hace falta el de python.org o Homebrew)
+python_ok() {
+  local p
+  for p in "${HUM_PYTHON:-}" python3.13 python3.12 python3.11 python3.10 python3; do
+    [ -n "$p" ] && command -v "$p" >/dev/null || continue
+    "$p" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' 2>/dev/null && { command -v "$p"; return 0; }
+  done
+  return 1
+}
+
 instalar() {
-  echo "→ Entorno de Python"
+  local py
+  py="$(python_ok)" || {
+    echo "HUM necesita Python 3.10 o más nuevo." >&2
+    if es_mac; then echo "  En la Mac: instalalo desde https://www.python.org/downloads/ (o con Homebrew: brew install python)" >&2
+    else echo "  En Debian/Ubuntu: sudo apt install python3 python3-venv" >&2; fi
+    exit 1
+  }
+  echo "→ Entorno de Python ($("$py" --version))"
   if [ ! -x "$BACK/venv/bin/python" ]; then
-    python3 -m venv "$BACK/venv" 2>/dev/null || virtualenv -q "$BACK/venv"
+    # Debian/Ubuntu sin python3-venv no traen ensurepip: se arma el entorno sin pip y se baja pip aparte
+    if ! "$py" -m venv "$BACK/venv" >/dev/null 2>&1; then
+      rm -rf "$BACK/venv"
+      if command -v virtualenv >/dev/null; then virtualenv -q -p "$py" "$BACK/venv"
+      elif "$py" -m venv --without-pip "$BACK/venv" \
+           && curl -fsSL https://bootstrap.pypa.io/get-pip.py | "$BACK/venv/bin/python" - -q; then :
+      else
+        echo "No pude crear el entorno de Python. En Debian/Ubuntu: sudo apt install python3-venv" >&2; exit 1
+      fi
+    fi
   fi
-  "$BACK/venv/bin/pip" install -q --upgrade pip
-  "$BACK/venv/bin/pip" install -q -r "$BACK/requirements.txt"
-  echo "→ Interfaz"
-  (cd "$FRONT" && npm install --no-audit --no-fund --silent && npm run build --silent)
-  echo "✓ HUM instalado. Abrilo con: hum"
+  "$BACK/venv/bin/pip" install -q --disable-pip-version-check --upgrade pip
+  if "$BACK/venv/bin/pip" install -q --disable-pip-version-check -r "$BACK/requirements.txt"; then
+    cp "$BACK/requirements.txt" "$BACK/venv/.requirements"
+  else
+    # La voz (Whisper, Piper) depende de bibliotecas nativas: si en este equipo no hay, HUM igual
+    # funciona por texto. Se reintenta en la próxima «hum actualizar».
+    echo "⚠ No pude instalar la voz en este equipo: HUM va a funcionar solo por texto." >&2
+    "$BACK/venv/bin/pip" install -q --disable-pip-version-check \
+      $(grep -E '^(fastapi|uvicorn|pydantic|anthropic)' "$BACK/requirements.txt" | sed 's/ *#.*//')
+  fi
+  if [ ! -f "$FRONT/dist/index.html" ]; then
+    echo "→ Interfaz (no vino compilada: la compilo, hace falta Node 20)"
+    (cd "$FRONT" && npm install --no-audit --no-fund --silent && npm run build --silent)
+  fi
+  echo "✓ HUM listo. Abrilo con: hum"
+}
+
+actualizar() {
+  [ -d "$RAIZ/.git" ] || { echo "Esta copia de HUM no vino de git: actualizala con el paquete de tu sistema." >&2; exit 1; }
+  echo "→ Bajando la última versión"
+  git -C "$RAIZ" pull --ff-only --quiet
+  if ! cmp -s "$BACK/requirements.txt" "$BACK/venv/.requirements" 2>/dev/null; then instalar; fi
+  if corriendo; then detener; levantar; fi
+  echo "✓ HUM $(cat "$RAIZ/VERSION")"
 }
 
 servidor() {
@@ -46,28 +104,65 @@ levantar() {
   corriendo && return 0
   [ -x "$BACK/venv/bin/uvicorn" ] || { aviso "HUM no está instalado. Corré: hum instalar"; exit 1; }
   (cd "$BACK" || exit 1; nohup "$BACK/venv/bin/uvicorn" main:app --host 127.0.0.1 --port "$PUERTO" --log-level warning >>"$LOG" 2>&1 & echo $! >"$PID")
-  for _ in $(seq 1 60); do corriendo && return 0; sleep 0.5; done
+  for _ in $(seq 1 120); do corriendo && return 0; sleep 0.5; done
   aviso "No pude arrancar HUM. Mirá $LOG"; exit 1
+}
+
+detener() {
+  if [ -f "$PID" ] && kill "$(cat "$PID")" 2>/dev/null; then rm -f "$PID"; echo "HUM detenido."
+  else echo "HUM no estaba corriendo."; fi
 }
 
 abrir() {
   levantar
-  # Ventana de app (sin barra de navegador) si hay Chromium; si no, el navegador por defecto.
-  # --use-fake-ui-for-media-stream no: el permiso del micrófono lo da la persona.
-  for b in chromium chromium-browser google-chrome brave-browser; do
+  # Ventana de app (sin barra de navegador) si hay Chromium o Chrome; si no, el navegador por defecto.
+  local perfil="$ESTADO/navegador" b app
+  if es_mac; then
+    for app in "Google Chrome" "Chromium" "Brave Browser" "Microsoft Edge"; do
+      if [ -d "/Applications/$app.app" ] || [ -d "$HOME/Applications/$app.app" ]; then
+        open -na "$app" --args --app="$URL" --user-data-dir="$perfil" --window-size=1280,860; return 0
+      fi
+    done
+    open "$URL"; return 0
+  fi
+  if es_wsl; then
+    # El navegador de Windows llega a 127.0.0.1 de WSL; el micrófono lo maneja Windows
+    if command -v wslview >/dev/null; then wslview "$URL"; else explorer.exe "$URL" || true; fi
+    return 0
+  fi
+  for b in chromium chromium-browser google-chrome google-chrome-stable brave-browser microsoft-edge; do
     if command -v "$b" >/dev/null; then
-      exec "$b" --app="$URL" --class=HUM --password-store=basic --user-data-dir="$ESTADO/navegador" --window-size=1280,860 >/dev/null 2>&1
+      exec "$b" --app="$URL" --class=HUM --password-store=basic --user-data-dir="$perfil" --window-size=1280,860 >/dev/null 2>&1
     fi
   done
   xdg-open "$URL" >/dev/null 2>&1 &
 }
 
+desinstalar() {
+  detener >/dev/null 2>&1 || true
+  rm -f "$HOME/.local/bin/hum" "$HOME/.local/share/applications/hum.desktop"
+  rm -f "$HOME/.local/share/icons/hicolor/scalable/apps/hum.svg"
+  rm -rf "$HOME/Applications/HUM.app" "$ESTADO"
+  local datos="${HUM_DATA_DIR:-$HOME/.local/share/hum}"
+  echo "Quité HUM. Tus conversaciones, recuerdos y planes siguen en $datos."
+  if [ -t 0 ]; then
+    read -r -p "¿Borrarlos también? Escribí BORRAR para confirmar: " r
+    if [ "$r" = BORRAR ]; then rm -rf "$datos" "${HUM_CONFIG_DIR:-$HOME/.config/hum}"; echo "Borrados."; fi
+  fi
+  case "$RAIZ" in
+    "$HOME/.local/share/hum-app") rm -rf "$RAIZ"; echo "✓ HUM desinstalado." ;;
+    *) echo "El código sigue en $RAIZ (no lo borro porque no lo instaló install.sh)." ;;
+  esac
+}
+
 case "${1:-abrir}" in
   abrir) abrir ;;
-  levantar) levantar; echo "HUM corriendo en $URL" ;;
   instalar) instalar ;;
+  actualizar) actualizar ;;
+  levantar) levantar; echo "HUM corriendo en $URL" ;;
   servidor) servidor ;;
-  detener) [ -f "$PID" ] && kill "$(cat "$PID")" 2>/dev/null && rm -f "$PID" && echo "HUM detenido." || echo "HUM no estaba corriendo." ;;
+  detener) detener ;;
   estado) corriendo && curl -fsS "$URL/api/estado" | python3 -c "import json,sys;d=json.load(sys.stdin);print('Corriendo en $URL · piensa con', d['proveedor'] or '(sin modelo)')" || echo "Detenido." ;;
-  *) sed -n '2,12p' "$0"; exit 1 ;;
+  desinstalar) desinstalar ;;
+  *) sed -n '2,16p' "$0"; exit 1 ;;
 esac
