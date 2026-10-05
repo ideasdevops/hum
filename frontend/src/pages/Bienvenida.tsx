@@ -11,14 +11,26 @@ export default function Bienvenida({ alTerminar }: { alTerminar: () => void }) {
   const [mapa, setMapa] = useState<Mapa | null>(null)
   const [valores, setValores] = useState<Record<string, number>>({})
   const [guardando, setGuardando] = useState(false)
+  const [error, setError] = useState('')
 
-  useEffect(() => { api.mapa().then((m) => { setMapa(m); setValores(Object.fromEntries(m.inteligencias.map((i) => [i.id, 5]))) }) }, [])
+  useEffect(() => {
+    api.mapa()
+      .then((m) => { setMapa(m); setValores(Object.fromEntries(m.inteligencias.map((i) => [i.id, 5]))) })
+      .catch((e) => setError(`No pude traer las inteligencias: ${e.message ?? e}`))
+  }, [])
 
   async function terminar() {
     setGuardando(true)
-    await api.guardarPersona({ nombre, como_llamarte: llamarte || nombre, contexto, valores: '', onboarding: true })
-    await api.autoevaluar(valores)
-    alTerminar()
+    setError('')
+    try {
+      // Primero la autoevaluación y recién después se marca el onboarding: si algo falla, se puede reintentar.
+      await api.autoevaluar(valores)
+      await api.guardarPersona({ nombre, como_llamarte: llamarte || nombre, contexto, valores: '', onboarding: true })
+      alTerminar()
+    } catch (e) {
+      setError(`No pude guardar: ${(e as Error).message ?? e}. ¿Sigue abierto HUM? Probá de nuevo en unos segundos.`)
+      setGuardando(false)
+    }
   }
 
   return (
@@ -58,6 +70,13 @@ export default function Bienvenida({ alTerminar }: { alTerminar: () => void }) {
         </div>
       )}
 
+      {paso === 2 && !mapa && (
+        <div className="tarjeta p-8 text-center text-tenue">
+          {error || <Orbe tam={60} estado="pensando" />}
+          <div className="mt-6"><button className="boton boton-sutil" onClick={() => setPaso(1)}>Atrás</button></div>
+        </div>
+      )}
+
       {paso === 2 && mapa && (
         <div className="tarjeta p-8">
           <h2 className="text-2xl font-semibold">¿Cómo te percibís hoy?</h2>
@@ -81,6 +100,7 @@ export default function Bienvenida({ alTerminar }: { alTerminar: () => void }) {
               ))}
             </div>
           ))}
+          {error && <p className="mt-6 rounded-xl border border-amber-500/30 bg-amber-950/40 px-4 py-3 text-sm text-amber-200">{error}</p>}
           <div className="mt-6 flex justify-between">
             <button className="boton boton-sutil" onClick={() => setPaso(1)}>Atrás</button>
             <button className="boton boton-primario" disabled={guardando} onClick={terminar}>{guardando ? 'Guardando…' : 'Listo, conozcámonos'}</button>

@@ -22,10 +22,19 @@ const SECCIONES = [
 export default function App() {
   const [estado, setEstado] = useState<Estado | null>(null)
   const [error, setError] = useState('')
-  const cargar = useCallback(() => api.estado().then(setEstado).catch((e) => setError(String(e.message ?? e))), [])
+  const cargar = useCallback(() => api.estado().then((e) => { setEstado(e); setError('') })
+    .catch((e) => setError(String(e.message ?? e))), [])
   useEffect(() => { void cargar() }, [cargar])
 
-  if (error) return <div className="grid h-full place-items-center p-8 text-center text-tenue">No puedo hablar con HUM: {error}</div>
+  if (error) return (
+    <div className="grid h-full place-items-center p-8 text-center text-tenue">
+      <div>
+        <p>No puedo hablar con HUM: {error}</p>
+        <p className="mt-2 text-sm">Si cerraste HUM, volvé a abrirlo. Lo que pasó queda anotado en ~/.local/state/hum/hum.log</p>
+        <button className="boton boton-primario mt-6" onClick={() => { setError(''); void cargar() }}>Reintentar</button>
+      </div>
+    </div>
+  )
   if (!estado) return <div className="grid h-full place-items-center"><Orbe tam={72} estado="pensando" /></div>
   if (!estado.persona.onboarding) return <Bienvenida alTerminar={cargar} />
 

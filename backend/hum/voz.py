@@ -8,6 +8,7 @@ La voz de HUM, 100 % local: lo que la persona dice no sale del equipo para ser t
 
 Los modelos se cargan una sola vez y quedan en memoria.
 """
+import importlib.util
 import io
 import logging
 import tempfile
@@ -132,15 +133,9 @@ def _limpiar_para_voz(texto: str) -> str:
 
 
 def estado() -> dict:
-    hay_whisper = hay_piper = True
-    try:
-        import faster_whisper  # noqa: F401, PLC0415
-    except ImportError:
-        hay_whisper = False
-    try:
-        import piper  # noqa: F401, PLC0415
-    except ImportError:
-        hay_piper = False
+    # Solo se fija si están instaladas: importarlas acá cargaría las bibliotecas nativas en cada /api/estado
+    hay_whisper = importlib.util.find_spec("faster_whisper") is not None
+    hay_piper = importlib.util.find_spec("piper") is not None
     voz = ajuste("voz", "es_AR-daniela-high")
     return {
         "oido": hay_whisper, "voz": hay_piper,

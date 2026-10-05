@@ -103,7 +103,12 @@ servidor() {
 levantar() {
   corriendo && return 0
   [ -x "$BACK/venv/bin/uvicorn" ] || { aviso "HUM no está instalado. Corré: hum instalar"; exit 1; }
-  (cd "$BACK" || exit 1; nohup "$BACK/venv/bin/uvicorn" main:app --host 127.0.0.1 --port "$PUERTO" --log-level warning >>"$LOG" 2>&1 & echo $! >"$PID")
+  # En una sesión propia (setsid): en macOS, lo que lanza HUM.app muere cuando el script de la app
+  # termina si queda en su mismo grupo de procesos. nohup solo no alcanza. execv conserva el PID.
+  (cd "$BACK" || exit 1
+   nohup "$BACK/venv/bin/python" -c 'import os, sys; os.setsid(); os.execv(sys.argv[1], sys.argv[1:])' \
+     "$BACK/venv/bin/uvicorn" main:app --host 127.0.0.1 --port "$PUERTO" --log-level warning >>"$LOG" 2>&1 &
+   echo $! >"$PID")
   for _ in $(seq 1 120); do corriendo && return 0; sleep 0.5; done
   aviso "No pude arrancar HUM. Mirá $LOG"; exit 1
 }

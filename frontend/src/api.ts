@@ -59,7 +59,8 @@ async function pedir<T>(ruta: string, opciones: RequestInit = {}): Promise<T> {
 const json = (datos: unknown) => JSON.stringify(datos)
 
 export const api = {
-  estado: () => pedir<Estado>('/api/estado'),
+  // Con tope: si el servidor quedó colgado, la interfaz avisa en vez de girar para siempre
+  estado: () => pedir<Estado>('/api/estado', { signal: AbortSignal.timeout(15000) }),
   persona: () => pedir<Persona>('/api/persona'),
   guardarPersona: (p: Partial<Omit<Persona, 'onboarding'>> & { onboarding?: boolean }) =>
     pedir<Persona>('/api/persona', { method: 'PUT', body: json(p) }),
