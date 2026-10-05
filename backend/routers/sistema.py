@@ -104,6 +104,13 @@ async def transcribir(request: Request):
     return {"texto": texto}
 
 
+@router.post("/voz/precalentar")
+def precalentar():
+    """Carga Whisper y Piper en segundo plano (se llama al abrir el modo voz o al dictar)."""
+    voz.precalentar()
+    return {"ok": True}
+
+
 class Decir(BaseModel):
     texto: str
 

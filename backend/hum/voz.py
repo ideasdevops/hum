@@ -149,6 +149,8 @@ def estado() -> dict:
 
 def precalentar() -> None:
     """Carga los modelos en segundo plano para que la primera charla por voz no espere."""
+    if _voz is not None and _whisper is not None:
+        return
     def _tarea():
         for f in (_modelo_voz, _modelo_whisper):
             try:

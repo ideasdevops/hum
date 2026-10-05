@@ -94,6 +94,7 @@ export default function Conversar() {
       } catch (e) { setAviso(String((e as Error).message)) ; return }
       setAviso('')
     } else {
+      void api.precalentarVoz().catch(() => {})
       try { setDictando(await grabar(false)) } catch { setAviso('No tengo acceso al micrófono.') }
     }
   }
@@ -210,9 +211,28 @@ function ModoVoz({ mandar, alSalir, alerta }: { mandar: Mandar; alSalir: () => v
   const activo = useRef(true)
   const grabacion = useRef<Grabacion | null>(null)
   const hablante = useRef<Hablante | null>(null)
+  // Una sola vuelta de escucha a la vez. Cada ciclo tiene su número: si arranca otro, el anterior se
+  // retira. Antes, al crearse la conversación cambiaba `mandar`, el efecto se reiniciaba y quedaban dos
+  // ciclos escuchando y respondiendo a la vez («se activa más de una vez»).
+  const corrida = useRef(0)
+  const corriendo = useRef(false)
+  const mandarRef = useRef(mandar)
+  mandarRef.current = mandar
 
   const ciclo = useCallback(async () => {
-    while (activo.current) {
+    if (corriendo.current) return
+    corriendo.current = true
+    const mia = ++corrida.current
+    const vigente = () => activo.current && corrida.current === mia
+    try {
+      await vuelta(vigente)
+    } finally {
+      if (corrida.current === mia) corriendo.current = false
+    }
+  }, [])
+
+  const vuelta = async (vigente: () => boolean) => {
+    while (vigente()) {
       setEstado('escuchando'); setError('')
       let g: Grabacion
       try { g = await grabar(true, 20000) } catch { setError('No tengo acceso al micrófono.'); setEstado('reposo'); return }
@@ -220,11 +240,12 @@ function ModoVoz({ mandar, alSalir, alerta }: { mandar: Mandar; alSalir: () => v
       const medidor = setInterval(() => setNivel(g.nivel()), 80)
       const audio = await g.resultado
       clearInterval(medidor); setNivel(0)
-      if (!activo.current) return
+      if (!vigente()) return
       if (!audio) { setEstado('reposo'); return } // nadie habló: queda en pausa hasta tocar el orbe
       setEstado('pensando')
       let t = ''
       try { t = await api.transcribir(audio) } catch (e) { setError((e as Error).message); continue }
+      if (!vigente()) return
       if (!t.trim()) continue
       setDijiste(t); setDice('')
       const h = new Hablante()
@@ -232,16 +253,20 @@ function ModoVoz({ mandar, alSalir, alerta }: { mandar: Mandar; alSalir: () => v
       const terminado = new Promise<void>((ok) => { h.alTerminar = ok })
       h.alEmpezar = () => setEstado('hablando')
       const frases = new Fraseador((f) => h.decir(f))
-      await mandar(t, 'voz', true, (trozo) => { setDice((d) => d + trozo); frases.agregar(trozo) })
+      await mandarRef.current(t, 'voz', true, (trozo) => { setDice((d) => d + trozo); frases.agregar(trozo) })
       frases.cerrar(); h.cerrar()
       await terminado
     }
-  }, [mandar])
+  }
 
   useEffect(() => {
     activo.current = true
+    void api.precalentarVoz().catch(() => {}) // carga Whisper y Piper mientras la persona habla
     void ciclo()
-    return () => { activo.current = false; grabacion.current?.cancelar(); hablante.current?.detener() }
+    return () => {
+      activo.current = false; corrida.current++; corriendo.current = false
+      grabacion.current?.cancelar(); hablante.current?.detener()
+    }
   }, [ciclo])
 
   function tocarOrbe() {

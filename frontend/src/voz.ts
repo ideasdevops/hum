@@ -130,14 +130,18 @@ export class Hablante {
 /** Corta el texto que va llegando en frases completas para empezar a hablar cuanto antes. */
 export class Fraseador {
   private buf = ''
+  private primera = true
   private alFrase: (f: string) => void
   constructor(alFrase: (f: string) => void) { this.alFrase = alFrase }
 
   agregar(t: string) {
     this.buf += t
     for (;;) {
-      const m = this.buf.match(/^([\s\S]{12,}?[.!?…:;])\s+/) ?? this.buf.match(/^([\s\S]+?)\n+/)
+      // La primera frase también se corta en una coma: es más corta, se sintetiza antes y HUM empieza a hablar antes.
+      const m = (this.primera ? this.buf.match(/^([\s\S]{20,}?,)\s+/) : null)
+        ?? this.buf.match(/^([\s\S]{12,}?[.!?…:;])\s+/) ?? this.buf.match(/^([\s\S]+?)\n+/)
       if (!m) break
+      this.primera = false
       this.alFrase(m[1].trim())
       this.buf = this.buf.slice(m[0].length)
     }

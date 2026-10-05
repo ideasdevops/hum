@@ -100,6 +100,7 @@ export const api = {
     if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail ?? 'No pude escuchar el audio.')
     return (await r.json()).texto as string
   },
+  precalentarVoz: () => pedir('/api/voz/precalentar', { method: 'POST' }),
   hablar: async (texto: string) => {
     const r = await fetch('/api/voz/hablar', { method: 'POST', body: json({ texto }), headers: { 'Content-Type': 'application/json' } })
     if (!r.ok) throw new Error('No pude generar la voz.')
