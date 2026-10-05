@@ -4,7 +4,10 @@ HUM — la inteligencia humanizada de JFlowOS (UEI · IdeasDevOps & Disruptia AI
 Servidor local: escucha solo en 127.0.0.1. Sirve la API y la interfaz compilada.
 Arranque:  venv/bin/uvicorn main:app --host 127.0.0.1 --port 8412
 """
+import faulthandler
 import logging
+import signal
+import sys
 import threading
 import time
 
@@ -19,6 +22,11 @@ from routers import conversaciones, sistema, vida
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 log = logging.getLogger("hum")
+
+# Diagnóstico: si HUM se cuelga, `kill -USR1 <pid>` vuelca al log dónde está cada hilo.
+faulthandler.enable()
+if hasattr(signal, "SIGUSR1"):
+    faulthandler.register(signal.SIGUSR1, all_threads=True)
 
 db.iniciar()
 
@@ -42,7 +50,9 @@ def _digestor():
 @app.on_event("startup")
 def _arranque():
     threading.Thread(target=_digestor, daemon=True).start()
-    if db.ajuste("voz_precargar", "1") == "1":
+    # En macOS no se precarga: bajar y cargar los modelos de voz al arrancar es el principal sospechoso
+    # del cuelgue al terminar la bienvenida en Mac (2026-10-05). Ahí la voz se carga al usarla.
+    if db.ajuste("voz_precargar", "0" if sys.platform == "darwin" else "1") == "1":
         voz.precalentar()
 
 

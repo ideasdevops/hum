@@ -63,10 +63,10 @@ export const api = {
   estado: () => pedir<Estado>('/api/estado', { signal: AbortSignal.timeout(15000) }),
   persona: () => pedir<Persona>('/api/persona'),
   guardarPersona: (p: Partial<Omit<Persona, 'onboarding'>> & { onboarding?: boolean }) =>
-    pedir<Persona>('/api/persona', { method: 'PUT', body: json(p) }),
+    pedir<Persona>('/api/persona', { method: 'PUT', body: json(p), signal: AbortSignal.timeout(20000) }),
   mapa: () => pedir<Mapa>('/api/inteligencias'),
   autoevaluar: (valores: Record<string, number>) =>
-    pedir('/api/autoevaluacion', { method: 'POST', body: json({ valores }) }),
+    pedir('/api/autoevaluacion', { method: 'POST', body: json({ valores }), signal: AbortSignal.timeout(20000) }),
 
   conversaciones: () => pedir<Conversacion[]>('/api/conversaciones'),
   nuevaConversacion: (modo = 'texto') => pedir<{ id: number }>('/api/conversaciones', { method: 'POST', body: json({ modo }) }),
