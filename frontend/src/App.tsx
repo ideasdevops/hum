@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { api, type Estado } from './api'
+import { AvisoVersion, useVersion } from './components/Actualizacion'
 import Orbe from './components/Orbe'
 import Ajustes from './pages/Ajustes'
 import Bienvenida from './pages/Bienvenida'
@@ -22,6 +23,7 @@ const SECCIONES = [
 export default function App() {
   const [estado, setEstado] = useState<Estado | null>(null)
   const [error, setError] = useState('')
+  const version = useVersion()
   const cargar = useCallback(() => api.estado().then((e) => { setEstado(e); setError('') })
     .catch((e) => setError(String(e.message ?? e))), [])
   useEffect(() => { void cargar() }, [cargar])
@@ -61,6 +63,7 @@ export default function App() {
         </div>
       </nav>
       <main className="min-w-0 flex-1 overflow-y-auto">
+        <AvisoVersion v={version.v} />
         {estado.error_proveedor && (
           <div className="border-b border-amber-500/30 bg-amber-950/40 px-6 py-2 text-sm text-amber-200">
             {estado.error_proveedor} <NavLink to="/ajustes" className="underline">Ir a Ajustes</NavLink>
@@ -74,7 +77,7 @@ export default function App() {
           <Route path="/mapa" element={<Mapa />} />
           <Route path="/planes" element={<Planes />} />
           <Route path="/memoria" element={<Memoria />} />
-          <Route path="/ajustes" element={<Ajustes alCambiar={cargar} />} />
+          <Route path="/ajustes" element={<Ajustes alCambiar={cargar} version={version} />} />
           <Route path="*" element={<Navigate to="/hoy" replace />} />
         </Routes>
       </main>

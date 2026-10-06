@@ -49,10 +49,17 @@ bibliotecas de voz no se pueden instalar, HUM queda funcionando por texto.
 
 ```bash
 hum                  # abre HUM en una ventana propia (Chrome/Chromium en modo app, o el navegador)
-hum actualizar       # baja la última versión
+hum actualizar       # baja la última versión (también se puede desde el panel, ver abajo)
 hum desinstalar      # quita HUM (pregunta si borrar también lo que HUM sabe de vos)
 hum levantar | estado | detener | servidor
 ```
+
+**Actualizaciones desde el panel.** HUM revisa el repositorio en silencio al minuto de arrancar y después
+cada 6 horas. Si hay una versión nueva, la avisa arriba del panel con la lista de novedades (los asuntos de
+los commits). «Actualizar ahora» baja el código, pone al día las dependencias y reinicia HUM; la ventana
+espera y se recarga sola. También está en Ajustes → Versión («Buscar actualizaciones»). Nunca pide
+credenciales: si el repositorio privado no es accesible sin intervención, lo dice en Ajustes. Lo que pasó
+queda en `~/.local/state/hum/actualizacion.log`. En JFlowOS HUM se actualiza con el sistema.
 
 Escucha solo en `127.0.0.1:8412`. Para pensar necesita **uno** de estos tres:
 

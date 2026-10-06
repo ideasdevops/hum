@@ -114,7 +114,13 @@ levantar() {
 }
 
 detener() {
-  if [ -f "$PID" ] && kill "$(cat "$PID")" 2>/dev/null; then rm -f "$PID"; echo "HUM detenido."
+  local p
+  p="$(cat "$PID" 2>/dev/null || true)"
+  if [ -n "$p" ] && kill "$p" 2>/dev/null; then
+    # Esperar a que se apague de verdad: si no, `levantar` lo ve vivo y no arranca el nuevo
+    for _ in $(seq 1 40); do kill -0 "$p" 2>/dev/null || break; sleep 0.25; done
+    kill -9 "$p" 2>/dev/null || true
+    rm -f "$PID"; echo "HUM detenido."
   else echo "HUM no estaba corriendo."; fi
 }
 

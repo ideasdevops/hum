@@ -1,5 +1,6 @@
 // Ajustes: con qué piensa HUM, su voz y tu perfil.
 import { useEffect, useState } from 'react'
+import { SeccionVersion, useVersion } from '../components/Actualizacion'
 import { api, type Persona } from '../api'
 
 type A = {
@@ -13,7 +14,7 @@ const PROVEEDORES = [
   ['ollama', 'Ollama (local)', 'Un modelo en tu equipo: nada sale de acá. La calidad depende del modelo.'],
 ]
 
-export default function Ajustes({ alCambiar }: { alCambiar: () => void }) {
+export default function Ajustes({ alCambiar, version }: { alCambiar: () => void; version: ReturnType<typeof useVersion> }) {
   const [a, setA] = useState<A | null>(null)
   const [p, setP] = useState<Persona | null>(null)
   const [clave, setClave] = useState('')
@@ -95,7 +96,9 @@ export default function Ajustes({ alCambiar }: { alCambiar: () => void }) {
         <button className="boton boton-primario mt-3" onClick={async () => { await api.guardarPersona({ nombre: p.nombre, como_llamarte: p.como_llamarte, contexto: p.contexto, valores: p.valores }); setMsj('Perfil guardado.'); alCambiar() }}>Guardar perfil</button>
       </section>
 
-      <p className="text-center text-xs text-tenue">HUM 0.1 · la IA de UEI (Universo Estratégico Inteligente) · JFlowOS · IdeasDevOps & Disruptia AI<br />
+      <SeccionVersion v={version.v} cargar={version.cargar} />
+
+      <p className="text-center text-xs text-tenue">HUM {version.v?.version ?? ''} · la IA de UEI (Universo Estratégico Inteligente) · JFlowOS · IdeasDevOps & Disruptia AI<br />
         HUM es una IA de acompañamiento: no reemplaza a profesionales de la salud, legales ni financieros.</p>
     </div>
   )

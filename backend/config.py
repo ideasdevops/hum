@@ -18,6 +18,8 @@ DATA_DIR = Path(os.environ.get("HUM_DATA_DIR", Path.home() / ".local" / "share" 
 ENV_PATH = CONFIG_DIR / "hum.env"
 DB_PATH = DATA_DIR / "hum.db"
 MODELOS_DIR = DATA_DIR / "modelos"
+# Mismo lugar que usa bin/hum para el PID y el log del servidor.
+ESTADO_DIR = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state")).expanduser() / "hum"
 # Modelos de voz que ya trae el sistema (JFlowOS): se usan antes de bajar nada.
 MODELOS_SISTEMA = Path(os.environ.get("HUM_MODELOS_SISTEMA", "/usr/share/jflowos/hum-modelos"))
 WHISPER_DEFECTO = os.environ.get("HUM_WHISPER_MODELO", "small")

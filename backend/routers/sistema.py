@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from config import WHISPER_DEFECTO, guardar_env, leer_env
 from db import ajuste, db, filas, guardar_ajuste
-from hum import proveedores, voz
+from hum import actualizacion, proveedores, voz
 
 router = APIRouter(prefix="/api", tags=["sistema"])
 
@@ -31,6 +31,22 @@ def estado():
         "disponibles": proveedores.disponibles(),
         "voz": voz.estado(),
     }
+
+
+@router.get("/version")
+def version(revisar: bool = False):
+    """Versión instalada y si hay una nueva. `revisar=true` consulta el repositorio en el momento."""
+    datos = actualizacion.revisar(forzar=revisar)
+    return {k: v for k, v in datos.items() if not k.startswith("_")}
+
+
+@router.post("/actualizar")
+def actualizar():
+    """Baja la versión nueva y reinicia HUM. La interfaz espera a que vuelva y se recarga."""
+    try:
+        return actualizacion.actualizar()
+    except RuntimeError as e:
+        raise HTTPException(400, str(e))
 
 
 class Ajustes(BaseModel):

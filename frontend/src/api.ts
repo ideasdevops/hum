@@ -43,6 +43,12 @@ export type Estado = {
   voz: { oido: boolean; voz: boolean; voz_elegida: string; voces: string[] }
 }
 
+export type Version = {
+  version: string; commit: string; disponible: boolean; nueva_version: string; novedades: string[]
+  puede: boolean; motivo: string; revisado: string
+  proceso: { estado?: 'en_curso' | 'ok' | 'error'; ts?: number; detalle?: string; desde?: string }
+}
+
 async function pedir<T>(ruta: string, opciones: RequestInit = {}): Promise<T> {
   const r = await fetch(ruta, {
     ...opciones,
@@ -91,6 +97,9 @@ export const api = {
   cambiarRecuerdo: (id: number, c: Partial<Recuerdo>) => pedir(`/api/recuerdos/${id}`, { method: 'PATCH', body: json(c) }),
   olvidar: (id: number) => pedir(`/api/recuerdos/${id}`, { method: 'DELETE' }),
   olvidarTodo: () => pedir('/api/olvidar-todo', { method: 'POST', body: json({ confirmacion: 'OLVIDAR' }) }),
+
+  version: (revisar = false) => pedir<Version>(`/api/version?revisar=${revisar}`, { signal: AbortSignal.timeout(60000) }),
+  actualizar: () => pedir<{ ok: boolean }>('/api/actualizar', { method: 'POST' }),
 
   ajustes: () => pedir<Record<string, unknown>>('/api/ajustes'),
   guardarAjustes: (a: Record<string, unknown>) => pedir<Record<string, unknown>>('/api/ajustes', { method: 'PUT', body: json(a) }),

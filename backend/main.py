@@ -17,7 +17,7 @@ from fastapi.staticfiles import StaticFiles
 
 import db
 from config import FRONTEND_DIST
-from hum import digestion, voz
+from hum import actualizacion, digestion, voz
 from routers import conversaciones, sistema, vida
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
@@ -30,7 +30,7 @@ if hasattr(signal, "SIGUSR1"):
 
 db.iniciar()
 
-app = FastAPI(title="HUM", version="0.1.0", docs_url="/api/docs", openapi_url="/api/openapi.json")
+app = FastAPI(title="HUM", version=actualizacion.version_local(), docs_url="/api/docs", openapi_url="/api/openapi.json")
 app.include_router(conversaciones.router)
 app.include_router(vida.router)
 app.include_router(sistema.router)
@@ -50,6 +50,7 @@ def _digestor():
 @app.on_event("startup")
 def _arranque():
     threading.Thread(target=_digestor, daemon=True).start()
+    actualizacion.vigilar()
     # En macOS no se precarga: bajar y cargar los modelos de voz al arrancar es el principal sospechoso
     # del cuelgue al terminar la bienvenida en Mac (2026-10-05). Ahí la voz se carga al usarla.
     if db.ajuste("voz_precargar", "0" if sys.platform == "darwin" else "1") == "1":
